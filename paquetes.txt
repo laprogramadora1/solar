@@ -1,0 +1,10 @@
+apt-get install python3-mysqldb
+pip install flask
+pip install python-dotenv
+pip install flask_sqlalchemy
+pip install PyMySQL
+pip install numpy
+pip install flask-cors
+
+pip install git+https://github.com/sam-s/py-corenlp.git
+pip install flask python-dotenv flask_sqlalchemy PyMySQL numpy flask-cors
