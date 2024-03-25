@@ -1,4 +1,4 @@
--- MariaDB dump 10.19  Distrib 10.11.4-MariaDB, for debian-linux-gnu (x86_64)
+-- MariaDB dump 10.19  Distrib 10.11.6-MariaDB, for debian-linux-gnu (x86_64)
 --
 -- Host: 127.0.0.1    Database: solardb
 -- ------------------------------------------------------
@@ -281,7 +281,7 @@ CREATE TABLE `catalogo` (
   `valor` varchar(100) DEFAULT NULL,
   `id_padre` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -304,25 +304,30 @@ INSERT INTO `catalogo` VALUES
 (11,'OCTUBRE',1,'739136eb-abf5-11ee-a5f8-0242d75ec5a6','0.94',1),
 (12,'NOVIEMBRE',1,'7bcf594f-abf5-11ee-a5f8-0242d75ec5a6','0.99',1),
 (13,'DICIEMBRE',1,'83c5eae8-abf5-11ee-a5f8-0242d75ec5a6','0.96',1),
-(14,'tipo_edificio',1,'2eefb451-ac62-11ee-a5f8-0242d75ec5a6','0',0),
-(15,'Residencial BMT',1,'4b5fcd9d-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(16,'General BTSD Comercial',1,'53a1e77a-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(17,'General BTSD Entidad Oficial',1,'5ae32c00-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(18,'General BTSD Bombeo de agua',1,'63296240-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(19,'General BTSD Servicio Público',1,'6b8ef881-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(20,'General BTSD Industrial',1,'746e46e0-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(21,'General BTCD Comercial',1,'7c81eaa2-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(22,'General BTCD Industrial',1,'847b2fe2-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(23,'General BTCD Entidad Oficial',1,'8c1c7503-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(24,'General BTCD Bombeo de agua',1,'93df6ecb-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(25,'General MTCD Comercial',1,'9c3f8a91-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(26,'General MTCD Industrial',1,'a47841d0-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(27,'General MTCD Entidad Oficial',1,'aca9ced6-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(28,'General MTCD Bombeo de agua',1,'b48b76e1-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(29,'General ATCD Comercial',1,'bc1ccf4a-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(30,'General ATCD Entidad Oficial',1,'c43b468c-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(31,'General ATCD Bombeo de agua',1,'cc6cbaf4-ac62-11ee-a5f8-0242d75ec5a6','0',14),
-(32,'General ATCD Servicio Público',1,'d4cd2966-ac62-11ee-a5f8-0242d75ec5a6','0',14);
+(32,'Tarifa',1,'12cec182-e873-11ee-a5fa-02423ab583a3','Tarifa',0),
+(33,'BTM',1,'9848b97e-e871-11ee-a5fa-02423ab583a3','BTM',32),
+(34,'BTSD',1,'a9dfb7f6-e871-11ee-a5fa-02423ab583a3','BTSD',32),
+(35,'BTCD',1,'b43d9019-e871-11ee-a5fa-02423ab583a3','BTCD',32),
+(36,'MTCD',1,'b9f4ca12-e871-11ee-a5fa-02423ab583a3','MTCD',32),
+(37,'ATCD',1,'bd941b31-e871-11ee-a5fa-02423ab583a3','ATCD',32),
+(38,'Residencial',1,'a8baefb8-e872-11ee-a5fa-02423ab583a3','Residencial',33),
+(39,'Comercial',1,'e18e0ac4-e872-11ee-a5fa-02423ab583a3','Comercial',34),
+(40,'Entidad Oficial',1,'e18f61b5-e872-11ee-a5fa-02423ab583a3','Entidad Oficial',34),
+(41,'Bombeo de agua',1,'e18f8477-e872-11ee-a5fa-02423ab583a3','Bombeo de agua',34),
+(42,'Servicio Público',1,'e18fafd7-e872-11ee-a5fa-02423ab583a3','Servicio Público',34),
+(43,'Industrial',1,'e18fcbc3-e872-11ee-a5fa-02423ab583a3','Industrial',34),
+(44,'Comercial',1,'e18fe843-e872-11ee-a5fa-02423ab583a3','Comercial',35),
+(45,'Industrial',1,'e1900db6-e872-11ee-a5fa-02423ab583a3','Industrial',35),
+(46,'Entidad Oficial',1,'e19029f5-e872-11ee-a5fa-02423ab583a3','Entidad Oficial',35),
+(47,'Bombeo de agua',1,'e1906496-e872-11ee-a5fa-02423ab583a3','Bombeo de agua',35),
+(48,'Comercial',1,'e1908c76-e872-11ee-a5fa-02423ab583a3','Comercial',36),
+(49,'Industrial',1,'e190ade2-e872-11ee-a5fa-02423ab583a3','Industrial',36),
+(50,'Entidad Oficial',1,'e190c84b-e872-11ee-a5fa-02423ab583a3','Entidad Oficial',36),
+(51,'Bombeo de agua',1,'e190e7e2-e872-11ee-a5fa-02423ab583a3','Bombeo de agua',36),
+(52,'Comercial',1,'e1910318-e872-11ee-a5fa-02423ab583a3','Comercial',37),
+(53,'Servicio Público',1,'e19127ef-e872-11ee-a5fa-02423ab583a3','Servicio Público',37),
+(54,'Entidad Oficial',1,'e19142d4-e872-11ee-a5fa-02423ab583a3','Entidad Oficial',37),
+(55,'Bombeo de agua',1,'e23a5b8c-e872-11ee-a5fa-02423ab583a3','Bombeo de agua',37);
 /*!40000 ALTER TABLE `catalogo` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -9107,4 +9112,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-01-08 12:10:14
+-- Dump completed on 2024-03-24 19:44:39
