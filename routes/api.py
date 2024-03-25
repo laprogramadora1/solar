@@ -7,6 +7,8 @@ from flask import jsonify, json, make_response, request
 from util.calculos import Calculos
 from decimal import Decimal
 from flask_cors import CORS
+from sqlalchemy.orm import load_only
+import base64
 api = Blueprint('api', __name__)
 
 
@@ -89,6 +91,27 @@ def lista_sitios_canton(externalC):
                 200,
             )
 
+@api.route('/api/sitio/soloCanton/<externalC>')
+def lista_sitios_solo_canton(externalC):
+    canton = Canton.query.filter_by(external_id=externalC).first()
+    if(canton):
+        fields = ['nombre']
+        sitios = Sitio.query.filter_by(id_canton=canton.id).group_by('nombre').all()
+        #return jsonify(sitios=[i.serialize_id for i in sitios])
+        return make_response(
+                    jsonify(
+                        {"message": "OK", "code": 200, "datos":([i.serialize_only_data for i in sitios])}
+                    ),
+                    200,
+        )
+    else:
+        return make_response(
+                jsonify(
+                    {"message": "Error, el canton no existe", "code": 200, "datos":[]}
+                ),
+                200,
+            )
+
 #Lista los sitios por canton y fuente
 @api.route('/api/sitio/canton/<externalC>/<fuente>')
 def lista_sitios_canton_fuente(externalC, fuente):
@@ -123,27 +146,7 @@ def lista_fuentes():
                 200,
             )
 
-#sitios
-@api.route('/api/catalogo/edificio')
-def lista_catalogo_edificio():
-    catalogo = Catalogo.query.filter_by(nombre = 'tipo_edificio').first()
-    if(catalogo):
 
-        edificio = Catalogo.query.filter_by(id_padre = 14).all()
-        #return jsonify(sitios=[i.serialize_id for i in sitios])
-        return make_response(
-                jsonify(
-                    {"message": "OK", "code": 200, "datos":([i.serialize_id for i in edificio])}
-                ),
-                200,
-            )
-    else:
-        return make_response(
-                jsonify(
-                    {"message": "Error, el catalogo edificio no existe", "code": 200, "datos":[]}
-                ),
-                200,
-            )
 #sitios
 @api.route('/api/sitio')
 def lista_sitios():
@@ -187,31 +190,95 @@ def calcular_post():
     coef_reflexion = data.get('coef_reflexion')
     inclinacion = data.get('inclinacion')
     orientacion = data.get('orientacion')
-    external = data.get('external')
+    fuente = data.get('fuente')
+    external = data.get('external')#es el sitio pero aqui hay q buscar 
+    external_64 = base64.b64decode(external).decode('UTF-8')
+    #xcv = str(external_64,encoding='utf-8')
+    print(tipo_edificio)
     potencia = data.get('potencia')
     eficiencia = data.get('eficiencia')
     fs = data.get('fs')
     rendimiento = data.get('rendimiento')
     demanda_potencia_electronica = data.get('demanda_potencia_electronica')
     costo_instalacion = data.get('costo_instalacion')
+    separate_external = external_64.split(";")
+    #print(separate_external[0])
+    if len(separate_external) == 2:
 
-    objCalc = Calculos()
-    sitio = Sitio.query.filter_by(external_id=external).first()
-    if(sitio):
-        #print (sitio)
-        calculos = objCalc.calculos_datos(float(costo_instalacion), float(demanda_potencia_electronica), float(consumo_mensual), tipo_edificio, sitio.latitud, float(coef_reflexion), float(inclinacion), float(orientacion), sitio, float(potencia), float(eficiencia), float(fs), float(rendimiento))    
-        #return jsonify(calculos)
+        objCalc = Calculos()
+        canton = Canton.query.filter_by(external_id = separate_external[1]).first()
+        if canton:
+            sitio = Sitio.query.filter_by(nombre=separate_external[0]).filter_by(id_canton = canton.id).filter_by(fuente = fuente).first()
+            if(sitio):
+                #print (sitio)
+                calculos = objCalc.calculos_datos(float(costo_instalacion), float(demanda_potencia_electronica), float(consumo_mensual), tipo_edificio, sitio.latitud, float(coef_reflexion), float(inclinacion), float(orientacion), sitio, float(potencia), float(eficiencia), float(fs), float(rendimiento))    
+                #return jsonify(calculos)
+                return make_response(
+                        jsonify(
+                            {"message": "OK", "code": 200, "datos":calculos}
+                        ),
+                        200,
+                    )
+            else:
+                return make_response(
+                        jsonify(
+                            {"message": "No se encuentra el sitio*", "code": 403}
+                        ),
+                        403,
+                    )
+        else:
+                return make_response(
+                        jsonify(
+                            {"message": "No se encuentra el canton", "code": 403}
+                        ),
+                        403,
+                    )
+    else:
+            return make_response(
+                    jsonify(
+                        {"message": "No se encuentra el sitio", "code": 403}
+                    ),
+                    403,
+                )
+    
+#catalogo
+@api.route('/api/catalogo/tarifa')
+def lista_catalogo_tarifa():
+    catalogo = Catalogo.query.filter_by(nombre = 'tarifa').first()
+    if(catalogo):
+        edificio = Catalogo.query.filter_by(id_padre = catalogo.id).all()
+        #return jsonify(sitios=[i.serialize_id for i in sitios])
         return make_response(
                 jsonify(
-                    {"message": "OK", "code": 200, "datos":calculos}
+                    {"message": "OK", "code": 200, "datos":([i.serialize_id for i in edificio])}
                 ),
                 200,
             )
     else:
         return make_response(
                 jsonify(
-                    {"message": "No se encuentra el sitio", "code": 403}
+                    {"message": "Error, el catalogo tarifa no existe", "code": 200, "datos":[]}
                 ),
-                403,
+                200,
             )
-    
+
+@api.route('/api/catalogo/tarifa/<external>')
+def lista_catalogo_edificio(external):
+    catalogo = Catalogo.query.filter_by(external_id = external).first()
+    if(catalogo):
+
+        edificio = Catalogo.query.filter_by(id_padre = catalogo.id).all()
+        #return jsonify(sitios=[i.serialize_id for i in sitios])
+        return make_response(
+                jsonify(
+                    {"message": "OK", "code": 200, "datos":([i.serialize_id for i in edificio])}
+                ),
+                200,
+            )
+    else:
+        return make_response(
+                jsonify(
+                    {"message": "Error, el catalogo edificio no existe", "code": 200, "datos":[]}
+                ),
+                200,
+            )
