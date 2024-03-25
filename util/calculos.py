@@ -191,13 +191,13 @@ class Calculos:
             calculo_valor_por_servicio_alumbrado = self.calculo_valor_por_servicio_alumbrado(tipo_edificio, calculo_valor_por_consumo, calculo_valor_por_comercializacion, calculo_valor_por_subsidio_cruzado)
             valor_factura_sin_fv = calculo_valor_por_consumo+calculo_valor_por_demanda+calculo_valor_por_comercializacion+calculo_valor_por_subsidio_cruzado+calculo_valor_por_servicio_alumbrado
             valor_factura_sin_fv_total = 0.0
-            if tipo_edificio == 'Residencial BMT':
+            if tipo_edificio == 'BTM Residencial':
                 valor_factura_sin_fv_total = valor_factura_sin_fv + (0.005 * 450)
-            elif tipo_edificio == 'General BTSD Comercial' or tipo_edificio == 'General BTCD Comercial' or tipo_edificio == 'General ATCD Comerciales':
+            elif tipo_edificio == 'BTSD Comercial' or tipo_edificio == 'BTCD Comercial' or tipo_edificio == 'ATCD Comerciales':
                 valor_factura_sin_fv_total = valor_factura_sin_fv + (0.015 * 450)
-            elif tipo_edificio == 'General BTSD Industria Artesanal':
+            elif tipo_edificio == 'BTSD Industria Artesanal':
                 valor_factura_sin_fv_total = valor_factura_sin_fv + (0.03 * 450)
-            elif tipo_edificio == 'General BTCD Industrial' or tipo_edificio == 'General MTCD Industrial':
+            elif tipo_edificio == 'BTCD Industrial' or tipo_edificio == 'MTCD Industrial':
                 valor_factura_sin_fv_total = valor_factura_sin_fv + (0.06 * 450)
             else:
                 valor_factura_sin_fv_total = valor_factura_sin_fv
@@ -219,13 +219,13 @@ class Calculos:
             calculo_valor_por_servicio_alumbrado_CFV = self.calculo_valor_por_servicio_alumbrado_CFV(tipo_edificio, calculo_valor_por_consumo_CFV, calculo_valor_por_comercializacion_CFV, calculo_valor_por_subsidio_cruzado_CFV)
             valor_factura_con_fv = calculo_valor_por_consumo_CFV+calculo_valor_por_demanda_CFV+calculo_valor_por_comercializacion_CFV+calculo_valor_por_subsidio_cruzado_CFV+calculo_valor_por_servicio_alumbrado_CFV
             valor_factura_con_fv_total = 0.0
-            if tipo_edificio == 'Residencial BMT':
+            if tipo_edificio == 'BTM Residencial':
                 valor_factura_con_fv_total = valor_factura_con_fv + (0.005 * 450)
-            elif tipo_edificio == 'General BTSD Comercial' or tipo_edificio == 'General BTCD Comercial' or tipo_edificio == 'General ATCD Comerciales':
+            elif tipo_edificio == 'BTSD Comercial' or tipo_edificio == 'BTCD Comercial' or tipo_edificio == 'ATCD Comerciales':
                 valor_factura_con_fv_total = valor_factura_con_fv + (0.015 * 450)
-            elif tipo_edificio == 'General BTSD Industria Artesanal':
+            elif tipo_edificio == 'BTSD Industria Artesanal':
                 valor_factura_con_fv_total = valor_factura_con_fv + (0.03 * 450)
-            elif tipo_edificio == 'General BTCD Industrial' or tipo_edificio == 'General MTCD Industrial':
+            elif tipo_edificio == 'BTCD Industrial' or tipo_edificio == 'MTCD Industrial':
                 valor_factura_con_fv_total = valor_factura_con_fv + (0.06 * 450)
             else:
                 valor_factura_con_fv_total = valor_factura_con_fv
@@ -249,6 +249,10 @@ class Calculos:
         calculo.append({"promedio_anual":1000.0*irradiacion_anual/365})
         energia_util_estimada = irradiacion_anual*potencia*(1-fs)*rendimiento
         calculo.append({"energia_util_estimada":energia_util_estimada})
+        print('**---***')
+        print(irradiacion_anual)
+        print(eficiencia)
+        print('**---***')
         superficie = energia_util_estimada/(irradiacion_anual*(eficiencia/100))
         calculo.append({"superficie":superficie})
         calculo.append({"suma_meses_consumo":suma_total_consumo})
@@ -293,7 +297,10 @@ class Calculos:
         elif (div_costo_instalacion_ahorro_anual) > 30:
             calculo_retorno_inversion = 30.00
         else:
-            calculo_retorno_inversion = costo_instalacion/ahorro_anual
+            if ahorro_anual > 0:                
+                calculo_retorno_inversion = costo_instalacion/ahorro_anual
+            else:
+                calculo_retorno_inversion = 0.0
         calculo.append({"retorno_inversion":calculo_retorno_inversion})
         return calculo
             
@@ -301,10 +308,10 @@ class Calculos:
     #calculos de dias FACTURA SIN FV
     def calculo_valor_por_consumo(self, tipo, consumo_mes):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if(consumo_mes >= 1):
                     if(consumo_mes <= 50):
                         valor = consumo_mes*0.091
@@ -338,54 +345,54 @@ class Calculos:
                         valor = 479.55+(consumo_mes-2500)*0.436
                     elif consumo_mes>=3501:
                         valor = 915.55+(consumo_mes-3500)*0.6812
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 if consumo_mes<=300:
                     valor = consumo_mes*0.092
                 else:
                     valor = 27.6+((consumo_mes-300)*0.103)
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 if consumo_mes<=300:
                     valor = consumo_mes*0.082
                 else:
                     valor = 24.6+((consumo_mes-300)*0.093)
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 if consumo_mes<=300:
                     valor = consumo_mes*0.072
                 else:
                     valor = 21.6+((consumo_mes-300)*0.083)
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 if consumo_mes<=300:
                     valor = consumo_mes*0.058
                 else:
                     valor = 17.4+((consumo_mes-300)*0.066)
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 if consumo_mes<=300:
                     valor = consumo_mes*0.073
                 else:
                     valor = 21.9+((consumo_mes-300)*0.089)
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = consumo_mes*0.09
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = consumo_mes*0.08
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = consumo_mes*0.08
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = consumo_mes*0.07
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = consumo_mes*0.095
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = consumo_mes*0.083
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = consumo_mes*0.071
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = consumo_mes*0.061
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = consumo_mes*0.089
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = consumo_mes*0.065
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = consumo_mes*0.055
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = consumo_mes*0.065
             return valor
         else:
@@ -394,44 +401,44 @@ class Calculos:
 
     def calculo_valor_por_demanda(self, tipo, demanda_potencia_electronica):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 valor = 0.0
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 valor = 0.0
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 valor = 0.0
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 valor = 0.0
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 valor = 0.0
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 valor = 0.0
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = demanda_potencia_electronica*3.0
             return valor
         else:
@@ -439,44 +446,44 @@ class Calculos:
     
     def calculo_valor_por_comercializacion(self, tipo):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 valor = 1.41
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 valor = 1.41
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 valor = 1.41
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 valor = 1.41
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 valor = 1.41
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = 1.41
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = 1.41
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = 1.41
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = 1.41
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = 1.41
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = 1.41
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = 1.41
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = 1.41
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = 1.41
             return valor
         else:
@@ -485,10 +492,10 @@ class Calculos:
 
     def calculo_valor_por_subsidio_cruzado(self, tipo, consumo_mes, valor_consumo, valor_comercializacion):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if consumo_mes > 80.0:
                     valor = (valor_consumo + valor_comercializacion)*0.1
         
@@ -496,95 +503,95 @@ class Calculos:
 
     def calculo_valor_por_servicio_alumbrado(self, tipo, valor_consumo, valor_comercializacion, valor_subsidio):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.135
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.135
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
@@ -828,10 +835,10 @@ class Calculos:
     #calculos de dias FACTURA CON FV
     def calculo_valor_por_consumo_CFV(self, tipo, D11):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if(D11 >= 1):
                     if(D11 <= 50):
                         valor = D11*0.091
@@ -865,54 +872,54 @@ class Calculos:
                         valor = 479.55+(D11-2500)*0.436
                     elif D11>=3501:
                         valor = 915.55+(D11-3500)*0.6812
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 if D11<=300:
                     valor = D11*0.092
                 else:
                     valor = 27.6+((D11-300)*0.103)
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 if D11<=300:
                     valor = D11*0.082
                 else:
                     valor = 24.6+((D11-300)*0.093)
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 if D11<=300:
                     valor = D11*0.072
                 else:
                     valor = 21.6+((D11-300)*0.083)
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 if D11<=300:
                     valor = D11*0.058
                 else:
                     valor = 17.4+((D11-300)*0.066)
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 if D11<=300:
                     valor = D11*0.073
                 else:
                     valor = 21.9+((D11-300)*0.089)
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = D11*0.09
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = D11*0.08
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = D11*0.08
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = D11*0.07
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = D11*0.095
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = D11*0.083
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = D11*0.071
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = D11*0.061
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = D11*0.089
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = D11*0.065
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = D11*0.055
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = D11*0.065
             return valor
         else:
@@ -921,44 +928,44 @@ class Calculos:
 
     def calculo_valor_por_demanda_CFV(self, tipo, demanda_potencia_electronica):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 valor = 0.0
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 valor = 0.0
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 valor = 0.0
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 valor = 0.0
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 valor = 0.0
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 valor = 0.0
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.79
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = demanda_potencia_electronica*4.4
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = demanda_potencia_electronica*3.0
             return valor
         else:
@@ -966,44 +973,44 @@ class Calculos:
     
     def calculo_valor_por_comercializacion_CFV(self, tipo):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 valor = 1.41
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 valor = 1.41
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 valor = 1.41
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 valor = 1.41
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 valor = 1.41
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 valor = 1.41
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 valor = 1.41
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 valor = 1.41
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 valor = 1.41
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 valor = 1.41
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 valor = 1.41
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 valor = 1.41
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 valor = 1.41
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 valor = 1.41
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 valor = 1.41
             return valor
         else:
@@ -1012,10 +1019,10 @@ class Calculos:
 
     def calculo_valor_por_subsidio_cruzado_CFV(self, tipo, D11, valor_consumo, valor_comercializacion):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if D11 > 80.0:
                     valor = (valor_consumo + valor_comercializacion)*0.1
         
@@ -1023,95 +1030,95 @@ class Calculos:
 
     def calculo_valor_por_servicio_alumbrado_CFV(self, tipo, valor_consumo, valor_comercializacion, valor_subsidio):
         #=IF(Z98>=1,IF(Z98<=50,Z98*0.091,IF(Z98<=100,4.55+(Z98-50)*0.093,IF(Z98<=150,9.2+(Z98-100)*0.095,IF(Z98<=200,13.95+(Z98-150)*0.097,IF(Z98<=250,18.8+(Z98-200)*0.099,IF(Z98<=300,23.75+(Z98-250)*0.101,IF(Z98<=350,28.8+(Z98-300)*0.103,IF(Z98<=400,33.95+(Z98-350)*0.105,IF(Z98<=450,39.2+(Z98-400)*0.105,IF(Z98<=500,44.45+(Z98-450)*0.105,IF(Z98<=700,49.7+(Z98-500)*0.1285,IF(Z98<=1000,75.4+(Z98-700)*0.145,IF(Z98<=1500,118.9+(Z98-1000)*0.1709,IF(Z98<=2500,204.35+(Z98-1500)*0.2752,IF(Z98<=3500,479.55+(Z98-2500)*0.436,IF(Z98>=3501,915.55+(Z98-3500)*0.6812)))))))))))))))))
-        tipo_edificio = ["Residencial BMT", "General BTSD Comercial","General BTSD Entidad Oficial","General BTSD Bombeo de agua","General BTSD Servicio Público","General BTSD Industrial","General BTCD Comercial","General BTCD Industrial","General BTCD Entidad Oficial","General BTCD Bombeo de agua","General MTCD Comercial","General MTCD Industrial","General MTCD Entidad Oficial","General MTCD Bombeo de agua","General ATCD Comercial","General ATCD Entidad Oficial","General ATCD Bombeo de agua","General ATCD Servicio Público"]
+        tipo_edificio = ["BTM Residencial", "BTSD Comercial","BTSD Entidad Oficial","BTSD Bombeo de agua","BTSD Servicio Público","BTSD Industrial","BTCD Comercial","BTCD Industrial","BTCD Entidad Oficial","BTCD Bombeo de agua","MTCD Comercial","MTCD Industrial","MTCD Entidad Oficial","MTCD Bombeo de agua","ATCD Comercial","ATCD Entidad Oficial","ATCD Bombeo de agua","ATCD Servicio Público"]
         valor = 0.0
         if tipo in tipo_edificio:
-            if tipo == 'Residencial BMT':
+            if tipo == 'BTM Residencial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.135
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.135
-            elif tipo == 'General BTSD Comercial':
+            elif tipo == 'BTSD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Entidad Oficial':
+            elif tipo == 'BTSD Entidad Oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Bombeo de agua':
+            elif tipo == 'BTSD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Servicio Público':
+            elif tipo == 'BTSD Servicio Público':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTSD Industria Artesanal':
+            elif tipo == 'BTSD Industria Artesanal':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1631
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1631
-            elif tipo == 'General BTCD Comercial':
+            elif tipo == 'BTCD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Industrial':
+            elif tipo == 'BTCD Industrial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Entidad Oficial':
+            elif tipo == 'BTCD Entidad Oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General BTCD Bombeo de agua':
+            elif tipo == 'BTCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.02155
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.02155
-            elif tipo == 'General MTCD Comercial':
+            elif tipo == 'MTCD Comercial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Industrial':
+            elif tipo == 'MTCD Industrial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Entidad oficial':
+            elif tipo == 'MTCD Entidad oficial':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General MTCD Bombeo de agua':
+            elif tipo == 'MTCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.1148
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.1148
-            elif tipo == 'General ATCD Comerciales':
+            elif tipo == 'ATCD Comerciales':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Entidades Oficiales':
+            elif tipo == 'ATCD Entidades Oficiales':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Bombeo de agua':
+            elif tipo == 'ATCD Bombeo de agua':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
                     valor = (valor_comercializacion+valor_consumo+valor_subsidio)*0.145838867595157
-            elif tipo == 'General ATCD Beneficio Público':
+            elif tipo == 'ATCD Beneficio Público':
                 if valor_consumo < 1.41:
                     valor = 1.41*0.145838867595157
                 else:
