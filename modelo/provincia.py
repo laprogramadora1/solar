@@ -21,11 +21,24 @@ class Provincia(db.Model):
     @property
     def serialize(self):
        """Return object data in easily serializable format"""
+       #print(len(self.cantones))
        return {
            'external'         : self.external_id,
            'nombre':self.nombre,
-           'estado' : self.estado
+           'estado' : 'Activo' if self.estado else 'Desactivado',
+           'nro_cantones': len(self.cantones)
            #'modified_at': dump_datetime(self.modified_at),
            # This is an example how to deal with Many2Many relations
            #'many2many'  : self.serialize_many2many
        }
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id  

@@ -12,12 +12,7 @@ import base64
 api = Blueprint('api', __name__)
 
 
-CORS(api)
-cors = CORS(api, resource={
-    r"/*":{
-        "origins":"*"
-    }
-})
+
 @api.route('/')
 def home():
     return 'Hola api solar'

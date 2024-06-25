@@ -58,6 +58,27 @@ class Sitio(db.Model):
        }
     
     @property
+    def serialize_nombre(self):
+       """Return object data in easily serializable format"""
+       
+       return {
+           'external'         : self.external_id,
+           'nombre':self.nombre,
+           'estado' : self.estado,
+           'canton' : self.canton.nombre,
+           'provincia' : self.canton.provincia.nombre,
+           'irradiacion' : self.irradiacion,
+           'promedio' : self.promedio,
+           #'coef_reflexion' : self.coef_reflexion,
+           'longitud' : self.longitud,
+           'latitud' : self.latitud,
+           'fuente': self.fuente.getValue()
+           #'modified_at': dump_datetime(self.modified_at),
+           # This is an example how to deal with Many2Many relations
+           #'many2many'  : self.serialize_many2many
+       }
+    
+    @property
     def serialize_only_data(self):
        """Return object data in easily serializable format"""
        
