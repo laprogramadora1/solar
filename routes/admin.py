@@ -77,7 +77,7 @@ def sesion():
 def total():
     provincias = Provincia.query.count()
     canton = Canton.query.count()
-    sitios = len(Sitio.query.group_by("id_canton").all())
+    sitios = Sitio.query.count()
     user = Persona.query.count()
     return make_response(
                 jsonify(
