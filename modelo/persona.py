@@ -16,12 +16,7 @@ class Persona(db.Model):
     updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now)
     cuenta = db.relationship('Cuenta', backref='persona', lazy=True)
 
-    @property
-    def _apellido(self):
-        return self.apellidos
-    @_apellido.setter
-    def _apellido(self, value):
-        self.apellidos = value
+    
     
     def copy(self, value):
         self.id = value.id
@@ -29,8 +24,7 @@ class Persona(db.Model):
         self.apellidos = value.apellidos
         self.nombres = value.nombres
         self.external_id = value.external_id
-        self.tipo = value.tipo
-        
+        self.tipo = value.tipo        
         self.created_at = value.created_at
         self.updated_at = value.updated_at
         self.id_rol = value.id_rol
@@ -43,8 +37,53 @@ class Persona(db.Model):
             'dni': self.dni,
             'nombres': self.nombres,
             'apellidos': self.apellidos,
-            'external': self.external_id,
-	   
-            'estado': self.estado.getValue(),
+            'external': self.external_id,	   
+            'tipo': self.tipo.getValue(),
             'cuenta': [i.serialize for i in self.cuenta]
         }
+    
+    @property
+    def serialize_nombre(self):       
+        return {
+            
+            'dni': self.dni,
+            'nombres': self.nombres,
+            'apellidos': self.apellidos,
+            'external': self.external_id,	   
+            'tipo': self.tipo.getValue(),
+            'cuenta': [i.serialize for i in self.cuenta],
+            'rol': self.getRol(self.id_rol).serialize_nombre
+        }
+
+    @property
+    def serialize_data(self):       
+        return {
+            
+            'dni': self.dni,
+            'nombres': self.nombres,
+            'apellidos': self.apellidos,
+            'external': self.external_id,	   
+            'tipo': self.tipo.getValue(),
+            'cuenta': self.getCuenta(self.id).serialize,
+            'rol': self.getRol(self.id_rol).serialize_nombre
+        }
+
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id  
+    
+    def getRol(self, id_r):
+        from modelo.rol import Rol        
+        return Rol.query.filter_by(id = id_r).first()
+    
+    def getCuenta(self, id_r):
+        from modelo.cuenta import Cuenta        
+        return Cuenta.query.filter_by(id_persona = id_r).first()

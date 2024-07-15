@@ -12,10 +12,11 @@ class Canton(db.Model):
     #provincia = db.relationship('Provincia',  primaryjoin='Provincia.id==Canton.id_provincia', remote_side='Provincia.id', uselist=False)
     sitios = db.relationship('Sitio', backref='canton', lazy=True)
 
-    def __init__(self, nombre, estado, external_id):
+    def __init__(self, nombre, estado, external_id, id_provincia):
         self.nombre = nombre
         self.estado = estado
         self.external_id = external_id 
+        self.id_provincia = id_provincia
     
     @property
     def serialize(self):
@@ -24,7 +25,9 @@ class Canton(db.Model):
        return {
            'external'         : self.external_id,
            'nombre':self.nombre,
-           'estado' : self.estado
+           'estado' : 'Activo' if self.estado else 'Desactivo',
+           'provincia' : self.provincia.external_id,
+           'prov': self.provincia.nombre
            
            #'modified_at': dump_datetime(self.modified_at),
            # This is an example how to deal with Many2Many relations
@@ -38,8 +41,9 @@ class Canton(db.Model):
        return {
            'external'         : self.external_id,
            'nombre':self.nombre,
-           'estado' : self.estado,
-           'provincia' : self.provincia.external_id
+           'estado' : 'Activo' if self.estado else 'Desactivo',
+           'provincia' : self.provincia.external_id,
+           'prov': self.provincia.nombre
            
            #'modified_at': dump_datetime(self.modified_at),
            # This is an example how to deal with Many2Many relations
@@ -51,3 +55,15 @@ class Canton(db.Model):
         
         prov = Provincia.query.get(id)
         return  jsonify(prov.serialize())
+    
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id  

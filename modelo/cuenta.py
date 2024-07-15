@@ -33,6 +33,19 @@ class Cuenta(db.Model):
             'external': self.external_id
         }
     
+    
     def getPersona(self, id_p):
-        from models.persona import Persona        
+        from modelo.persona import Persona        
         return Persona.query.filter_by(id = id_p).first()
+    
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id 

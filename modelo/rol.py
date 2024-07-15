@@ -16,3 +16,24 @@ class Rol(db.Model):
             'external': self.external_id,
             'estado': 1 if self.estado else 0
         }
+    
+    @property
+    def serialize_nombre(self):
+        return {
+            
+            'nombre': self.nombre,
+            'descripcion': self.descripcion
+            
+        }
+    
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id  

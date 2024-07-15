@@ -3,10 +3,12 @@ from modelo.provincia import Provincia
 from modelo.canton import Canton
 from modelo.sitio import Sitio
 from modelo.catalogo import Catalogo
+from modelo.censosolar import CensoSolar
 from flask import jsonify, json, make_response, request
 from util.calculos import Calculos
+from util.calculosNoSitio import CalculosNoSitio
 from decimal import Decimal
-from flask_cors import CORS
+
 from sqlalchemy.orm import load_only
 import base64
 api = Blueprint('api', __name__)
@@ -129,6 +131,28 @@ def lista_sitios_canton_fuente(externalC, fuente):
                 200,
             )
 
+@api.route('/api/sitio/censo/<externalC>/<fuente>')
+def lista_sitios_fuente(externalC, fuente):
+    sitio = Sitio.query.filter_by(external_id=externalC, fuente=fuente).first()
+    
+    if(sitio):
+        
+        censos = CensoSolar.query.filter_by(id_sitio=sitio.id).all()
+        #return jsonify(sitios=[i.serialize_id for i in sitios])
+        return make_response(
+                    jsonify(
+                        {"message": "OK", "code": 200, "datos":([i.serialize_nombre for i in censos])}
+                    ),
+                    200,
+        )
+    else:
+        return make_response(
+                jsonify(
+                    {"message": "Error, el sitio no existe", "code": 200, "datos":[]}
+                ),
+                200,
+            )
+
 #Fuentes
 @api.route('/api/fuentes')
 def lista_fuentes():
@@ -141,6 +165,16 @@ def lista_fuentes():
                 200,
             )
 
+@api.route('/api/meses')
+def lista_meses():
+    sitios = CensoSolar.getListEnum()
+    #return jsonify(sitios=[i.serialize_id for i in sitios])
+    return make_response(
+                jsonify(
+                    {"message": "OK", "code": 200, "datos":sitios}
+                ),
+                200,
+            )
 
 #sitios
 @api.route('/api/sitio')
@@ -198,7 +232,7 @@ def calcular_post():
     costo_instalacion = data.get('costo_instalacion')
     separate_external = external_64.split(";")
     #print(separate_external[0])
-    if len(separate_external) == 2:
+    if len(separate_external) >= 2:
 
         objCalc = Calculos()
         canton = Canton.query.filter_by(external_id = separate_external[1]).first()
@@ -235,14 +269,60 @@ def calcular_post():
                     ),
                     403,
                 )
-    
+
+
+@api.route('/api/calculos/sinsitio', methods =['POST'])
+def calcular_sin_sitio_post():
+    data = request.json
+    consumo_mensual = data.get('consumo_mensual')
+    tipo_edificio = data.get('tipo_edificio')
+    coef_reflexion = data.get('coef_reflexion')
+    inclinacion = data.get('inclinacion')
+    orientacion = data.get('orientacion')
+    fuente = data.get('fuente')
+    #external = data.get('external')#es el sitio pero aqui hay q buscar 
+    #external_64 = base64.b64decode(external).decode('UTF-8')
+    #xcv = str(external_64,encoding='utf-8')
+    print(tipo_edificio)
+    potencia = data.get('potencia')
+    eficiencia = data.get('eficiencia')
+    fs = data.get('fs')
+    rendimiento = data.get('rendimiento')
+    demanda_potencia_electronica = data.get('demanda_potencia_electronica')
+    costo_instalacion = data.get('costo_instalacion')
+    #separate_external = external_64.split(";")
+    #print(separate_external[0])
+    meses = data.get('meses') 
+    if len(meses) == 13:
+        objCalc = CalculosNoSitio()        
+        censos = []
+        for key in meses:
+            c1 = CensoSolar(key.upper(), float(meses[key]),"",0)            
+            censos.append(c1)
+            print(c1.mes+"  "+str(c1.irradiacion))
+        
+        calculos = objCalc.calculos_datos_sin_sitio(float(costo_instalacion), float(demanda_potencia_electronica), float(consumo_mensual), tipo_edificio, float(data.get('lat')), float(coef_reflexion), float(inclinacion), float(orientacion), censos, float(potencia), float(eficiencia), float(fs), float(rendimiento))                
+        return make_response(
+                        jsonify(
+                            {"message": "OK", "code": 200, "datos":calculos}
+                        ),
+                        200,
+                    )            
+    else:
+            return make_response(
+                    jsonify(
+                        {"message": "No se encuentra el sitio", "code": 403}
+                    ),
+                    403,
+                )
+
+
 #catalogo
 @api.route('/api/catalogo/tarifa')
 def lista_catalogo_tarifa():
     catalogo = Catalogo.query.filter_by(nombre = 'tarifa').first()
     if(catalogo):
-        edificio = Catalogo.query.filter_by(id_padre = catalogo.id).all()
-        #return jsonify(sitios=[i.serialize_id for i in sitios])
+        edificio = Catalogo.query.filter_by(id_padre = catalogo.id).all()        
         return make_response(
                 jsonify(
                     {"message": "OK", "code": 200, "datos":([i.serialize_id for i in edificio])}

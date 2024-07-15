@@ -31,6 +31,7 @@ def after_request_func(response):
 def bad_request(error):
     if isinstance(error.description, ValidationError):
         msg_error = error.description
+        
         return make_response(        
             jsonify({"msg":"error", "code": 400, "datos":msg_error}),
             400

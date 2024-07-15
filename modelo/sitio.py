@@ -29,12 +29,17 @@ class Sitio(db.Model):
 
     censosolar = db.relationship('CensoSolar', backref='sitio', lazy=True)
     
-    def __init__(self, nombre, estado, external_id, promedio, irradiacion):
+    def __init__(self, nombre, estado, external_id, promedio, irradiacion, longitud, latitud, fuente, id_canton, ubicacion):
         self.nombre = nombre
         self.estado = estado
         self.promedio = promedio
         self.irradiacion = irradiacion
         self.external_id = external_id 
+        self.fuente = fuente
+        self.longitud = longitud
+        self.latitud = latitud
+        self.id_canton = id_canton
+        self.ubicacion = ubicacion
     
     @property
     def serialize_id(self):
@@ -43,6 +48,7 @@ class Sitio(db.Model):
        return {
            'external'         : self.external_id,
            'nombre':self.nombre,
+           'ubicacion': self.ubicacion,
            'estado' : self.estado,
            'canton' : self.canton.external_id,
            'provincia' : self.canton.provincia.external_id,
@@ -64,7 +70,7 @@ class Sitio(db.Model):
        return {
            'external'         : self.external_id,
            'nombre':self.nombre,
-           'estado' : self.estado,
+           'estado' : 'Activo' if self.estado else 'Desactivo',
            'canton' : self.canton.nombre,
            'provincia' : self.canton.provincia.nombre,
            'irradiacion' : self.irradiacion,
@@ -72,6 +78,7 @@ class Sitio(db.Model):
            #'coef_reflexion' : self.coef_reflexion,
            'longitud' : self.longitud,
            'latitud' : self.latitud,
+           'ubicacion': self.ubicacion,
            'fuente': self.fuente.getValue()
            #'modified_at': dump_datetime(self.modified_at),
            # This is an example how to deal with Many2Many relations
@@ -83,7 +90,7 @@ class Sitio(db.Model):
        """Return object data in easily serializable format"""
        
        return {
-           
+           'external'         : self.external_id,
            'nombre':self.nombre,
            'estado' : self.estado,
            'canton' : self.canton.external_id,
@@ -102,3 +109,15 @@ class Sitio(db.Model):
         for data in FuenteEnum:
             lista.append({"key":data.name,"value":data.value})            
         return lista
+    
+    @property
+    def guardar(self):
+        db.session.add(self)
+        db.session.commit()
+        return self.id
+    
+    @property
+    def modificar(self):         
+        db.session.merge(self)
+        db.session.commit()
+        return self.id  

@@ -1,7 +1,7 @@
 import enum
 class TipoIdentificacion(enum.Enum):
-    CEDULA = 'SOLTERO'
-    PASAPORTE = 'CASADO'
+    CEDULA = 'CEDULA'
+    PASAPORTE = 'PASAPORTE'
     
 
     def getValue(self):
