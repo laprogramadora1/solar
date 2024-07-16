@@ -21,5 +21,7 @@ class Config:
 
     #DATABASE_CONNECTION_URI = f'mariadb+mariadbconnector://{user}:{password}@{host}/{database}'
     SQLALCHEMY_DATABASE_URI = f'mysql://{user}:{password}@{host}/{database}'
+    print("************************")
+    print(SQLALCHEMY_DATABASE_URI)    
     SQLALCHEMY_ECHO = True
     SQLALCHEMY_TRACK_MODIFICATIONS = True
