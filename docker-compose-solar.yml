@@ -61,9 +61,42 @@ services:
 #        reservations:
 #          #cpus: '0.25'
 #          memory: 512M
+
     networks:
       solar-network:
         ipv4_address: 172.19.0.2
+
+  solar-front:
+    container_name: solar-front-container
+    build: /home/sebastian/teste/solar_front
+    image: solar-front:latest
+    #environment:
+    #  MYSQL_HOST: ${MYSQL_HOST}
+    #  MYSQL_USER: admin
+    #  MYSQL_PASSWORD: root12345
+    #  MYSQL_DB: solardb
+    #  FLASK_ENV: development
+    #  FLASK_APP: Solar
+    #  SECRET_KEY: solas90866
+    ports:
+      - "80:8000"
+    depends_on:
+      - solar-web
+    links:
+        - solar-web
+#    deploy:
+#      resources:
+#        limits:
+#          #cpus: '0.50'
+#          memory: 1024M
+#        reservations:
+#          #cpus: '0.25'
+#          memory: 512M
+
+    networks:
+      solar-network:
+        ipv4_address: 172.19.0.3
+
 
 networks:
   solar-network:
