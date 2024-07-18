@@ -35,10 +35,10 @@ services:
       solar-network:
         ipv4_address: 172.19.0.253
 
-  solar-web:
-    container_name: solar-web-container
-    build: .
-    image: solar-web-api:latest
+#  solar-web:
+#    container_name: solar-web-container
+#    build: .
+#    image: solar-web-api:latest
     #environment:
     #  MYSQL_HOST: ${MYSQL_HOST}
     #  MYSQL_USER: admin
@@ -47,12 +47,13 @@ services:
     #  FLASK_ENV: development
     #  FLASK_APP: Solar
     #  SECRET_KEY: solas90866    
-    ports:
-      - "5000:5000"
-    depends_on:
-      - solar-db
-    links:
-        - solar-db
+#    ports:
+#      - "5000:5000"
+#    depends_on:
+#      - solar-db
+#      - adminer-bd
+#    links:
+#        - solar-db
 #    deploy:
 #      resources:
 #        limits:
@@ -62,13 +63,13 @@ services:
 #          #cpus: '0.25'
 #          memory: 512M
 
-    networks:
-      solar-network:
-        ipv4_address: 172.19.0.2
+#    networks:
+#      solar-network:
+#        ipv4_address: 172.19.0.2
 
   solar-front:
     container_name: solar-front-container
-    build: /home/sebastian/teste/solar_front
+    build: /home/cis/elizabeth/solar_front
     image: solar-front:latest
     #environment:
     #  MYSQL_HOST: ${MYSQL_HOST}
@@ -79,11 +80,12 @@ services:
     #  FLASK_APP: Solar
     #  SECRET_KEY: solas90866
     ports:
-      - "80:8000"
+      - "81:8000"
     depends_on:
-      - solar-web
-    links:
-        - solar-web
+      - solar-db
+  #    - solar-web
+    #links:
+    #    - solar-web
 #    deploy:
 #      resources:
 #        limits:

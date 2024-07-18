@@ -47,7 +47,7 @@ class Sitio(db.Model):
        
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'ubicacion': self.ubicacion,
            'estado' : self.estado,
            'canton' : self.canton.external_id,
@@ -69,10 +69,10 @@ class Sitio(db.Model):
        
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'estado' : 'Activo' if self.estado else 'Desactivo',
-           'canton' : self.canton.nombre,
-           'provincia' : self.canton.provincia.nombre,
+           'canton' : self.canton.nombre.upper(),
+           'provincia' : self.canton.provincia.nombre.upper(),
            'irradiacion' : self.irradiacion,
            'promedio' : self.promedio,
            #'coef_reflexion' : self.coef_reflexion,
@@ -91,7 +91,7 @@ class Sitio(db.Model):
        
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'estado' : self.estado,
            'canton' : self.canton.external_id,
            'provincia' : self.canton.provincia.external_id,

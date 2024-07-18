@@ -24,7 +24,7 @@ class Canton(db.Model):
        
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'estado' : 'Activo' if self.estado else 'Desactivo',
            'provincia' : self.provincia.external_id,
            'prov': self.provincia.nombre
@@ -40,10 +40,10 @@ class Canton(db.Model):
        
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'estado' : 'Activo' if self.estado else 'Desactivo',
            'provincia' : self.provincia.external_id,
-           'prov': self.provincia.nombre
+           'prov': self.provincia.nombre.upper()
            
            #'modified_at': dump_datetime(self.modified_at),
            # This is an example how to deal with Many2Many relations

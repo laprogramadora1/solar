@@ -9,6 +9,8 @@ app = create_app()
 @app.after_request
 def after_request_func(response):
     origin = request.headers.get('Origin')    
+    print("*********HEADRES**********")
+    print(request.headers)
     if request.method == 'OPTIONS':        
         response = make_response()
         response.headers.add('Access-Control-Allow-Credentials', 'true')
@@ -16,14 +18,24 @@ def after_request_func(response):
         response.headers.add('Access-Control-Allow-Headers', 'x-csrf-token')
         response.headers.add('Access-Control-Allow-Headers', 'Accept')
         response.headers.add('Access-Control-Allow-Headers', 'X-Access-Token')
-        response.headers.add('Access-Control-Allow-Methods',
-        'GET, POST, OPTIONS, PUT, PATCH, DELETE')
-        if origin:
-            response.headers.add('Access-Control-Allow-Origin', origin)
+        response.headers.add('Access-Control-Allow-Methods','GET, POST, OPTIONS, PUT, PATCH, DELETE')
+        print("OPTIONS");
+        #if origin:
+        response.headers.add('Access-Control-Allow-Origin', '*')
     else:
-        response.headers.add('Access-Control-Allow-Credentials', 'true')        
-        if origin:
-            response.headers.add('Access-Control-Allow-Origin', origin)
+        print(request.method);
+        #response.headers.add('Access-Control-Allow-Credentials', 'true')        
+        #if origin:
+        response.headers.add('Access-Control-Allow-Origin', '*')
+        response.headers.add('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE')    
+        response.headers.add('Access-Control-Allow-Credentials', 'true')
+        response.headers.add('Access-Control-Allow-Headers', '*')
+        #response.headers.add('Access-Control-Allow-Headers', '*')
+        #response.headers.add('Access-Control-Allow-Headers', 'Accept')
+        #response.headers.add('Access-Control-Allow-Headers', 'X-Access-Token')
+
+
+    print( response)
 
     return response
 

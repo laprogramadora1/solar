@@ -26,6 +26,7 @@ class CantonEditSchema(ProvinciaEditSchema):
 
 @admin.route('/api/inicio')
 def inicio():
+    print("ESTOY EN INICIO")
     pc = PersonaControl()
     pc.crear_roles()
     return make_response(

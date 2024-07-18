@@ -24,7 +24,7 @@ class Provincia(db.Model):
        #print(len(self.cantones))
        return {
            'external'         : self.external_id,
-           'nombre':self.nombre,
+           'nombre':self.nombre.upper(),
            'estado' : 'Activo' if self.estado else 'Desactivado',
            'nro_cantones': len(self.cantones)
            #'modified_at': dump_datetime(self.modified_at),
