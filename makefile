@@ -5,7 +5,7 @@ app:=app
 
 .PHONY: start
 start:
-	@ nohup ./virtual/bin/gunicorn -b "0.0.0.0:5000" \
+	@ nohup /home/cis/elizabeth/solar/virtual/bin/gunicorn -b "0.0.0.0:5000" \
 	-w 4 --daemon ${module}:${app} --access-logfile /home/cis/elizabeth/solar/solar.log
 
 .PHONY: status
